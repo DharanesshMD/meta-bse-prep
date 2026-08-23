@@ -87,11 +87,11 @@ h2{font-size:23px;line-height:1.22;margin:0 0 12px;letter-spacing:-.022em;font-w
 .body code,.qtext code{background:var(--panel2);padding:1.5px 5px;border-radius:5px;font-size:.88em;color:#9dc0f5;word-break:break-word;overflow-wrap:anywhere}
 pre{background:#0a0c0f;border:1px solid var(--line);border-radius:12px;padding:12px;margin:15px 0 0;
   display:block;width:100%;max-width:100%;min-width:0;height:auto;max-height:none;
-  box-sizing:border-box;overflow:visible;flex:0 0 auto;
-  font-size:12.8px;line-height:1.65;color:#cfd8e5;
-  white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;tab-size:2}
-pre .ln{display:block;width:100%;max-width:100%;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap}
-pre span{overflow-wrap:anywhere;word-break:break-word}
+  box-sizing:border-box;overflow-x:auto;overflow-y:hidden;flex:0 0 auto;-webkit-overflow-scrolling:touch;
+  font-size:12.6px;line-height:1.65;color:#cfd8e5;
+  white-space:pre;overflow-wrap:normal;word-break:normal;tab-size:2}
+pre .ln{display:block;width:max-content;min-width:100%;white-space:pre}
+pre span{word-break:normal;overflow-wrap:normal}
 pre .c{color:#5f6b7c;font-style:italic}
 pre .s{color:#86c98f}
 pre .k{color:#8ab4f8}
@@ -186,7 +186,6 @@ pre .n{color:#e0a86a}
   .qtext{font-size:17px}
   .deck{padding:13px 12px;gap:10px}
   .grade button{flex:1 1 100%}
-  pre,pre span,pre .ln{word-break:break-all}
 }
 @media(min-width:720px){
   #home{max-width:600px;margin:0 auto;left:0;right:0}
