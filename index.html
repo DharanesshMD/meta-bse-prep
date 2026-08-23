@@ -66,10 +66,10 @@ h1{font-size:28px;line-height:1.15;margin:9px 0 8px;letter-spacing:-.02em;font-w
 .count{font-size:11.5px;color:var(--dim2);font-variant-numeric:tabular-nums;flex:0 0 auto;min-width:44px;text-align:right}
 .stage{flex:1;position:relative;overflow:hidden}
 #track{position:absolute;inset:0;will-change:transform}
-.slide{position:absolute;left:0;width:100%;height:100%;padding:2px 14px 14px;display:flex;flex-direction:column;overflow:hidden}
-.card{flex:1;min-height:0;background:var(--panel);border:1px solid var(--line);
+.slide{position:absolute;left:0;width:100%;height:100%;padding:2px 14px 14px;display:flex;flex-direction:column;overflow:hidden;min-width:0;max-width:100%}
+.card{flex:1;min-width:0;min-height:0;background:var(--panel);border:1px solid var(--line);
   border-radius:22px;padding:22px 16px calc(var(--safeB) + 20px);
-  display:flex;flex-direction:column;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;max-width:100%}
+  display:flex;flex-direction:column;overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;max-width:100%}
 .card::-webkit-scrollbar{width:0}
 .tagrow{display:flex;align-items:center;gap:7px;margin-bottom:14px;flex:0 0 auto}
 .tag{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:750;padding:4px 8px;border-radius:6px}
@@ -83,13 +83,14 @@ h1{font-size:28px;line-height:1.15;margin:9px 0 8px;letter-spacing:-.02em;font-w
 h2{font-size:23px;line-height:1.22;margin:0 0 12px;letter-spacing:-.022em;font-weight:700;overflow-wrap:anywhere}
 .body{font-size:16.5px;line-height:1.62;color:#d5dde8;margin:0;overflow-wrap:anywhere}
 .body b{color:#fff;font-weight:680}
-.body code,.qtext code{background:var(--panel2);padding:1.5px 5px;border-radius:5px;font-size:.88em;color:#9dc0f5;word-break:break-word}
-pre{background:#0a0c0f;border:1px solid var(--line);border-radius:12px;padding:13px;margin:15px 0 0;
-  overflow-x:hidden;overflow-y:visible;max-width:100%;
-  font-size:12.8px;line-height:1.62;color:#cfd8e5;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
-pre::-webkit-scrollbar{height:5px;-webkit-appearance:none}
-pre::-webkit-scrollbar-track{background:transparent}
-pre::-webkit-scrollbar-thumb{background:#39445a;border-radius:3px}
+.body code,.qtext code{background:var(--panel2);padding:1.5px 5px;border-radius:5px;font-size:.88em;color:#9dc0f5;word-break:break-word;overflow-wrap:anywhere}
+pre{background:#0a0c0f;border:1px solid var(--line);border-radius:12px;padding:12px;margin:15px 0 0;
+  display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;
+  overflow-x:auto;overflow-y:visible;
+  font-size:12.8px;line-height:1.62;color:#cfd8e5;
+  white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;tab-size:2}
+pre .ln{display:block;max-width:100%;min-width:0;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap}
+pre span{overflow-wrap:anywhere;word-break:break-word}
 pre .c{color:#5f6b7c;font-style:italic}
 pre .s{color:#86c98f}
 pre .k{color:#8ab4f8}
@@ -184,6 +185,7 @@ pre .n{color:#e0a86a}
   .qtext{font-size:17px}
   .deck{padding:13px 12px;gap:10px}
   .grade button{flex:1 1 100%}
+  pre,pre span,pre .ln{word-break:break-all}
 }
 @media(min-width:720px){
   #home{max-width:600px;margin:0 auto;left:0;right:0}
@@ -1309,10 +1311,10 @@ function md(s){
                .replace(/\n/g,"<br>");
 }
 const HLRE=/(#[^\n]*|--[^\n]*)|('[^'\n]*'|"[^"\n]*")|\b(SELECT|FROM|WHERE|GROUP BY|ORDER BY|HAVING|LEFT JOIN|INNER JOIN|JOIN|ON|AND|OR|NOT|NULL|IS|AS|WITH|CASE|WHEN|THEN|ELSE|END|COUNT|SUM|AVG|MAX|MIN|ROUND|COALESCE|NULLIF|DISTINCT|OVER|PARTITION BY|ROW_NUMBER|RANK|DENSE_RANK|LAG|LEAD|DATE_TRUNC|PERCENTILE_CONT|WITHIN GROUP|EXTRACT|INTERVAL|LIMIT|IN|EXISTS|def|class|for|in|if|elif|else|return|import|from|try|except|with|print|lambda|True|False|None|while|break|continue|self)\b|(\b\d+(?:\.\d+)?\b)/g;
-function hl(code){
+function hlLine(line){
   let out="",last=0,m; HLRE.lastIndex=0;
-  while((m=HLRE.exec(code))!==null){
-    out+=esc(code.slice(last,m.index));
+  while((m=HLRE.exec(line))!==null){
+    out+=esc(line.slice(last,m.index));
     const t=esc(m[0]);
     if(m[1])      out+='<span class="c">'+t+'</span>';
     else if(m[2]) out+='<span class="s">'+t+'</span>';
@@ -1320,7 +1322,12 @@ function hl(code){
     else          out+='<span class="n">'+t+'</span>';
     last=m.index+m[0].length;
   }
-  return out+esc(code.slice(last));
+  return out+esc(line.slice(last));
+}
+function hl(code){
+  return String(code).split("\n").map(function(line){
+    return '<span class="ln">'+(line?hlLine(line):"\u00a0")+"</span>";
+  }).join("");
 }
 
 /* ---------- HOME ---------- */
